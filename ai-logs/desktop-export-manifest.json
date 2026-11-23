@@ -1,0 +1,47 @@
+{
+  "source": "Codex Desktop local rollout JSONL",
+  "period": {
+    "from": "2026-11-23T10:58:35+08:00",
+    "to": "2026-11-23T11:45:37+08:00",
+    "cutoff": "End of the original assignment delivery turn"
+  },
+  "original_prefix_sha256": "1399354edd40ce09416c78778395959d08cb73fb7821357341604e1d0756e578",
+  "counts": {
+    "conversation_user": 4,
+    "conversation_assistant": 12,
+    "tool_calls": 129,
+    "tool_calls_with_redaction": 73,
+    "tool_results": 129,
+    "tool_results_with_redaction": 49
+  },
+  "restricted_items_in_log": {
+    "injected_context_records": 2,
+    "categories": {
+      "local-tool-instructions": 4,
+      "private-assignment": 4,
+      "private-assignment-excerpt": 2,
+      "private-assignment-subsection": 8,
+      "private-command-parameter": 33,
+      "private-contact": 6,
+      "private-credential-routing": 1,
+      "private-document-screenshot": 2,
+      "private-document-url": 8,
+      "private-export-mechanism": 1,
+      "private-infrastructure": 11,
+      "private-infrastructure-address": 6,
+      "private-infrastructure-name": 2,
+      "private-local-identity": 73,
+      "private-memory": 7,
+      "private-memory-citation": 1,
+      "private-memory-locator": 14,
+      "private-personal-identity": 8,
+      "private-runtime-path": 7,
+      "private-submission-draft": 1,
+      "private-workflow-metrics": 5,
+      "third-party-page-excerpts": 1,
+      "unrelated-browser-inventory": 1,
+      "unrelated-repositories": 1
+    }
+  },
+  "method": "Visible messages and all actual tool call/result records in the scoped turn, with sensitive components replaced and two safe binary outputs stored as attachments."
+}

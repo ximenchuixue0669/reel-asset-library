@@ -22,7 +22,7 @@ This rebuilds the TypeScript dashboard, checks Python style, and runs the catalo
 
 ## Connect an MCP client
 
-Start [MCP Inspector](https://github.com/modelcontextprotocol/inspector) with `npx -y @modelcontextprotocol/inspector`. Select **Streamable HTTP**, enter the `/mcp` URL above, and connect. Use the dashboard in a separate tab. To use Codex CLI as the model-driven client, configure a server named `reel` with the same URL.
+Start [MCP Inspector](https://github.com/modelcontextprotocol/inspector) with `npx -y @modelcontextprotocol/inspector@1.0.6`. This Inspector version requires Node.js 22.7.5 or later. Select **Streamable HTTP**, enter the `/mcp` URL above, and connect. Use the dashboard in a separate tab. To use Codex CLI as the model-driven client, configure a server named `reel` with the same URL.
 
 ```toml
 [mcp_servers.reel]
@@ -47,7 +47,7 @@ Separate tools give the model small, distinct schemas and let clients identify t
 
 1. List tools, resources, and prompts in Inspector. Open the catalog statistics resource. Watch the calls appear on the dashboard.
 2. Ask a model-driven client, “Find the two newest approved images for neon-harbor since January 6, 2026 UTC.” Inspect the resulting `search_assets` call and arguments in the dashboard.
-3. Try `search_assets` with `{"type":"movie"}`. The result names the valid values. Retry with `{"type":"video","limit":1}`. Set **Next call returns an error** and make another tool call to verify the one-shot failure. **Tools are slow** adds two seconds per tool call.
+3. Try `search_assets` with `{"type":"movie"}`. The result names the valid values. Retry with `{"type":"video","limit":1}`. Set **Next call returns an error**, then run `get_asset` twice with `{"asset_id":"asset-001"}`. The first call returns an injected error and clears the switch. The second returns the asset. **Tools are slow** adds two seconds per tool call.
 4. Try `search_assets` with `{"path_prefix":"../../outside"}`. The error explains how to supply a library-relative folder. Try `{"path_prefix":"neon-harbor/image"}` next.
 5. Call `delete_asset` with `{"asset_id":"asset-001"}`. Verify that the count stays at 30 and a pending request appears. The dashboard **Approve** button issues a one-time code. Paste it as `confirmation_code` on a second MCP call for the same ID to soft-delete it. **Reset data** restores the sample dataset. Keep the confirmation code out of screenshots and model conversations that are shared publicly.
 6. With the dashboard open, run the following command. It sends an MCP cancellation after the second of four thumbnails. The progress bar stops at `2 / 4`, and the request is labelled **Cancelled**. A batch allowed to finish takes about 15 seconds and writes JPEG files under `.data/thumbnails/`.
