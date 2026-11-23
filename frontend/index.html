@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Reel Asset Library</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script type="module" src="./assets/main.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h1>Reel Asset Library</h1>
+      </div>
+      <div id="connection" class="connection" role="status"><i aria-hidden="true"></i><span>Connecting</span></div>
+    </header>
+    <main>
+      <section class="overview" aria-label="Catalog overview">
+        <div class="metric"><span>Active assets</span><strong id="total-assets">–</strong><small id="asset-types"></small></div>
+        <div class="metric"><span>Running jobs</span><strong id="active-jobs">–</strong><small>Thumbnail batches</small></div>
+        <div class="endpoint"><label for="mcp-url">Streamable HTTP endpoint</label><div><input id="mcp-url" readonly /><button id="copy-url" type="button">Copy</button></div></div>
+      </section>
+      <div class="layout">
+        <section class="panel activity" aria-labelledby="activity-heading">
+          <header class="panel-header">
+            <div><h2 id="activity-heading">Live call log</h2><p>Run tools from your MCP client. Select a call to inspect its payloads.</p></div>
+            <div class="filters" aria-label="Filter calls"><button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="error" aria-pressed="false">Errors</button></div>
+          </header>
+          <div id="call-log" class="call-log"></div>
+          <p id="empty-log" class="empty">Waiting for an MCP client to connect.</p>
+        </section>
+        <aside class="sidebar" aria-label="Demo controls">
+          <section class="panel controls" aria-labelledby="debug-heading">
+            <header class="panel-header"><div><h2 id="debug-heading">Debug controls</h2><p>Apply faults to incoming tool calls.</p></div></header>
+            <label class="switch-row"><span>Next call returns an error<small>Turns off after one tool call.</small></span><input id="fail-next" type="checkbox" role="switch" /></label>
+            <label class="switch-row"><span>Tools are slow<small>Adds two seconds per tool call.</small></span><input id="slow-tools" type="checkbox" role="switch" /></label>
+            <div class="reset"><button id="reset-data" type="button">Reset data</button><small>Restore the 30 sample assets and clear generated thumbnails.</small></div>
+          </section>
+          <section class="panel approvals" aria-labelledby="approval-heading">
+            <header class="panel-header"><div><h2 id="approval-heading">Deletion approvals</h2><p>Review a request before giving the MCP client a code.</p></div></header>
+            <div id="approval-list"></div>
+            <p id="empty-approvals" class="empty compact">No pending deletions.</p>
+          </section>
+          <p id="feedback" class="feedback" role="status" hidden></p>
+        </aside>
+      </div>
+    </main>
+    <template id="call-template">
+      <details class="call">
+        <summary>
+          <span class="call-name"></span><span class="call-state"></span><time class="call-time"></time><span class="duration"></span>
+          <span class="progress-wrap" hidden><progress></progress><span></span></span>
+        </summary>
+        <div class="payloads"><div><h3 class="parameters-label">Parameters</h3><pre class="parameters"></pre></div><div><h3 class="output-label"></h3><pre class="output"></pre></div></div>
+      </details>
+    </template>
+  </body>
+</html>
