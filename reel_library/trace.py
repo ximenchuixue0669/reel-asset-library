@@ -127,6 +127,10 @@ class SessionTrace:
             return
         rpc = message.message.root
         if isinstance(rpc, types.JSONRPCRequest):
+            if (previous := self.pending.pop(rpc.id, None)) is not None:
+                self.log.finish(
+                    previous, "error", error={"message": "Client reused an in-flight request ID."}
+                )
             self.pending[rpc.id] = self.log.start(rpc.method, rpc.params or {})
         elif isinstance(rpc, types.JSONRPCNotification):
             call = self.log.start(rpc.method, rpc.params or {})

@@ -19,11 +19,19 @@ from pydantic import (
     model_validator,
 )
 
-from reel_library.catalog import AssetType, Catalog, CatalogError, Search, check_relative_path
+from reel_library.catalog import (
+    PATH_SEGMENT,
+    AssetType,
+    Catalog,
+    CatalogError,
+    Search,
+    check_relative_path,
+)
 
 LOGGER = logging.getLogger(__name__)
 STATS_URI = "reel://catalog/statistics"
 PROMPT_NAME = "plan_project_organization"
+PATH_PREFIX_PATTERN = rf"^{PATH_SEGMENT.pattern}(?:/{PATH_SEGMENT.pattern}){{0,7}}$"
 AssetId = Annotated[
     str,
     Field(
@@ -56,6 +64,7 @@ class SearchArgs(ToolArgs):
     path_prefix: str | None = Field(
         None,
         max_length=255,
+        json_schema_extra={"pattern": PATH_PREFIX_PATTERN},
         description="Library-relative folder such as neon-harbor/image. Use slash-separated folders without a leading or trailing slash or dot segments.",
     )
     created_from: AwareDatetime | None = Field(

@@ -33,6 +33,12 @@ from reel_library.trace import CallLog, TracedServer
 FRONTEND_ROOT = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 LOCAL_HOSTS = ("localhost", "127.0.0.1", "[::1]")
 NO_STORE = {"Cache-Control": "no-store"}
+PAGE_HEADERS = {
+    **NO_STORE,
+    "Content-Security-Policy": "default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+}
 
 
 class AccessGate:
@@ -146,7 +152,7 @@ def create_app(
         index_path = frontend / "index.html"
         if not index_path.is_file():
             return PlainTextResponse("Dashboard not built. Run make dev.", status_code=503)
-        return FileResponse(index_path, headers=NO_STORE)
+        return FileResponse(index_path, headers=PAGE_HEADERS)
 
     async def health(request: Request):
         return JSONResponse(
@@ -164,11 +170,15 @@ def create_app(
                 signal = call_log.signal
                 if call_log.revision != revision:
                     revision = call_log.revision
-                    yield f"event: snapshot\ndata: {json.dumps(snapshot(), ensure_ascii=True, separators=(',', ':'))}\n\n"
+                    data = snapshot()
+                    approvals = data["approvals"]
+                    yield f"event: snapshot\ndata: {json.dumps(data, ensure_ascii=True, separators=(',', ':'))}\n\n"
                 try:
                     await asyncio.wait_for(signal.wait(), timeout=15)
                 except TimeoutError:
                     yield ": heartbeat\n\n"
+                    if operations.pending_approvals() != approvals:
+                        revision = -1
 
         return StreamingResponse(
             events(),

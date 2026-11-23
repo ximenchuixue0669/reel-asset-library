@@ -7,12 +7,12 @@ import anyio
 import httpx
 import pytest
 import uvicorn
-from mcp import ClientSession, types
+from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
 from reel_library.app import create_app
+from reel_library.demo_client import ACCEPT, initialize, messages
 
-ACCEPT = {"Accept": "application/json, text/event-stream"}
 DASHBOARD = {"x-reel-dashboard": "1"}
 
 
@@ -36,12 +36,6 @@ async def running(app):
         finally:
             server.should_exit = True
             await task
-
-
-async def messages(response):
-    async for line in response.aiter_lines():
-        if line.startswith("data: ") and line[6:].strip():
-            yield json.loads(line[6:])
 
 
 @pytest.mark.anyio
@@ -97,25 +91,7 @@ async def test_inspector_flow_with_real_streamable_http_and_dashboard(tmp_path):
 async def test_protocol_cancel_updates_log_and_cleans_partial_files(tmp_path):
     app = create_app(tmp_path, thumbnail_seconds=4)
     async with running(app) as base, httpx.AsyncClient(base_url=base, timeout=8) as http:
-        initialize = {
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "initialize",
-            "params": {
-                "protocolVersion": types.LATEST_PROTOCOL_VERSION,
-                "capabilities": {},
-                "clientInfo": {"name": "test-harness", "version": "1"},
-            },
-        }
-        async with http.stream("POST", "/mcp", headers=ACCEPT, json=initialize) as response:
-            response.raise_for_status()
-            session_id = response.headers["Mcp-Session-Id"]
-            version = (await anext(messages(response)))["result"]["protocolVersion"]
-        headers = {**ACCEPT, "Mcp-Session-Id": session_id, "MCP-Protocol-Version": version}
-        initialized = await http.post(
-            "/mcp", headers=headers, json={"jsonrpc": "2.0", "method": "notifications/initialized"}
-        )
-        assert initialized.status_code == 202
+        headers = await initialize(http, "/mcp")
         call = {
             "jsonrpc": "2.0",
             "id": 2,
