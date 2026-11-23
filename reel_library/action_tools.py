@@ -37,7 +37,9 @@ def action_tools(
             if dashboard_progress is not None:
                 dashboard_progress(context.request_id, done, total, message)
             if token is not None:
-                await context.session.send_progress_notification(token, done, total, message)
+                await context.session.send_progress_notification(
+                    token, done, total, message, related_request_id=str(context.request_id)
+                )
 
         return await operations.generate_thumbnails(params.project, progress)
 
