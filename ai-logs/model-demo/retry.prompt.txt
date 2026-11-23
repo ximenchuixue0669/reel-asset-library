@@ -1,0 +1,1 @@
+For a short MCP demo, try listing one asset of type "movie" with the configured reel server, using the literal value movie on the first call. If the tool rejects that value, use its error message to choose the equivalent allowed type and retry once. Use only the configured reel MCP server. Report the correction and the returned asset ID.

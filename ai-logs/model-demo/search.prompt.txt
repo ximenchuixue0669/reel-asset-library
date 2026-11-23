@@ -1,0 +1,1 @@
+Find the two newest approved images for the neon-harbor project created on or after January 6, 2026 UTC. Use only the configured reel MCP server and report the asset IDs and paths. Please do one search call with the useful filters and page size.
